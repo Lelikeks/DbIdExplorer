@@ -61,7 +61,11 @@ namespace DbIdExplorer
 		{
 			set
 			{
-				if (value == null) return;
+				if (value == null)
+				{
+					DataTable.Clear();
+					return;
+				}
 				DataTable = DbManager.GetData(ConnectionString, value, _loadedGuid);
 			}
 		}
