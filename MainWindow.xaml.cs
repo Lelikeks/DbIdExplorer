@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
 
 namespace DbIdExplorer
 {
@@ -40,5 +42,35 @@ namespace DbIdExplorer
 		{
 			get { return (MainViewModel) DataContext; }
 		}
-	}
+
+        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            var textBlock = new FrameworkElementFactory(typeof(TextBlock));
+            textBlock.SetValue(TextBlock.TextProperty, new Binding
+            {
+                Path = new PropertyPath(e.PropertyName)
+            });
+
+            var style = new Style();
+            var trigger = new Trigger
+            {
+                Property = TextBlock.TextProperty,
+                Value = ViewModel.Id?.ToString()
+            };
+            trigger.Setters.Add(new Setter(TextBlock.BackgroundProperty, new SolidColorBrush(Color.FromRgb(240, 240, 240))));
+
+            style.Triggers.Add(trigger);
+            textBlock.SetValue(TextBlock.StyleProperty, style);
+
+            var cell = new DataTemplate
+            {
+                VisualTree = textBlock
+            };
+            e.Column = new DataGridTemplateColumn
+            {
+                Header = e.PropertyName,
+                CellTemplate = cell
+            };
+        }
+    }
 }
