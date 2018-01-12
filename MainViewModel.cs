@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Runtime.CompilerServices;
 using DbIdExplorer.Annotations;
-using System.Diagnostics;
 using System.Linq;
-using System.Windows.Controls;
 
 namespace DbIdExplorer
 {
-	internal class MainViewModel : INotifyPropertyChanged
+    internal class MainViewModel : INotifyPropertyChanged
 	{
 		private Guid? _id;
 		private DataTable _dataTable;
@@ -65,8 +62,18 @@ namespace DbIdExplorer
 					DataTable.Clear();
 					return;
 				}
-				DataTable = DbManager.GetData(ConnectionString, value, Id.Value);
-			}
+
+                var dataTable = DbManager.GetData(ConnectionString, value, Id.Value);
+
+                var num = 0;
+                foreach (var column in value.Columns)
+                {
+                    dataTable.Columns[column.Name].SetOrdinal(num);
+                    num++;
+                }
+
+                DataTable = dataTable;
+            }
 		}
 
 		public DataTable DataTable
