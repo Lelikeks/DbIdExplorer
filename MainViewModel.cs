@@ -14,7 +14,6 @@ namespace DbIdExplorer
 	internal class MainViewModel : INotifyPropertyChanged
 	{
 		private Guid? _id;
-		private Guid _loadedGuid;
 		private DataTable _dataTable;
 		private object _selectedCell;
 		private string _connectionString;
@@ -61,12 +60,12 @@ namespace DbIdExplorer
 		{
 			set
 			{
-				if (value == null)
+				if (value == null || !Id.HasValue)
 				{
 					DataTable.Clear();
 					return;
 				}
-				DataTable = DbManager.GetData(ConnectionString, value, _loadedGuid);
+				DataTable = DbManager.GetData(ConnectionString, value, Id.Value);
 			}
 		}
 
@@ -87,17 +86,16 @@ namespace DbIdExplorer
 			Tables = new ObservableCollection<TableItem>();
 
 			SearchCommand = new Command(OnSearch, () => Id != null);
-			SearchThisCommand = new Command(OnSearchThis, () => SelectedCell is Guid && (Guid)SelectedCell != _loadedGuid);
+			SearchThisCommand = new Command(OnSearchThis, () => SelectedCell is Guid && (Guid)SelectedCell != Id);
 		}
 
 		private void OnSearch()
 		{
-			if (Id == null) return;
+			if (!Id.HasValue) return;
 
 			Tables.Clear();
-			_loadedGuid = Id.Value;
 
-			foreach (var table in DbManager.Search(ConnectionString, _loadedGuid).OrderBy(x => x.Name))
+			foreach (var table in DbManager.Search(ConnectionString, Id.Value).OrderBy(x => x.Name))
 			{
 				Tables.Add(table);
 			}
