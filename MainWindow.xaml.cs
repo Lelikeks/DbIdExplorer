@@ -65,10 +65,15 @@ namespace DbIdExplorer
             {
                 VisualTree = textBlock
             };
+
             e.Column = new DataGridTemplateColumn
             {
                 Header = e.PropertyName,
-                CellTemplate = cell
+                CellTemplate = cell,
+                ClipboardContentBinding = new Binding
+                {
+                    Path = new PropertyPath(e.PropertyName)
+                }
             };
         }
     }
