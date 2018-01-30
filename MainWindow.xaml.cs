@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Data;
 using System.Linq;
 using System.Windows;
@@ -29,12 +30,27 @@ namespace DbIdExplorer
 		private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
 		{
 			ViewModel.ConnectionString = Properties.Settings.Default.ConnectionString;
+
+            if (Properties.Settings.Default.SavedConnectionStrings != null)
+            {
+                foreach (var str in Properties.Settings.Default.SavedConnectionStrings)
+                {
+                    if (!ViewModel.SavedConnectionStrings.Contains(str))
+                    {
+                        ViewModel.SavedConnectionStrings.Add(str);
+                    }
+                }
+            }
 		}
 
 		private void MainWindow_OnClosed(object sender, EventArgs e)
 		{
 			Properties.Settings.Default.ConnectionString = ViewModel.ConnectionString;
-			Properties.Settings.Default.Save();
+
+            Properties.Settings.Default.SavedConnectionStrings = new StringCollection();
+            Properties.Settings.Default.SavedConnectionStrings.AddRange(ViewModel.SavedConnectionStrings.ToArray());
+
+            Properties.Settings.Default.Save();
 		}
 
 		private MainViewModel ViewModel

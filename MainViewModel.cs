@@ -15,7 +15,7 @@ namespace DbIdExplorer
 		private object _selectedCell;
 		private string _connectionString;
 
-		public Guid? Id
+        public Guid? Id
 		{
 			get { return _id; }
 			set
@@ -43,11 +43,18 @@ namespace DbIdExplorer
 			set
 			{
 				_connectionString = value;
-				OnPropertyChanged();
+                OnPropertyChanged();
+
+                if (!SavedConnectionStrings.Contains(_connectionString))
+                {
+                    SavedConnectionStrings.Insert(0, _connectionString);
+                }
 			}
 		}
 
-		public ObservableCollection<TableItem> Tables { get; set; }
+        public ObservableCollection<string> SavedConnectionStrings { get; } = new ObservableCollection<string>();
+
+        public ObservableCollection<TableItem> Tables { get; set; }
 
 		public Command SearchCommand { get; set; }
 
