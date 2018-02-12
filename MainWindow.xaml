@@ -62,7 +62,7 @@
                 </i:Interaction.Behaviors>
             </TreeView>
             <GridSplitter Grid.Column="1" Width="4" ResizeBehavior="PreviousAndNext"/>
-            <DataGrid Grid.Column="2" SelectionUnit="Cell" SelectionMode="Single" IsReadOnly="True"
+            <DataGrid Grid.Column="2" SelectionUnit="Cell" SelectionMode="Single" IsReadOnly="True" FrozenColumnCount="{Binding FrozenColumnCount}"
                 SelectedCellsChanged="DataGrid_OnSelectedCellsChanged" ItemsSource="{Binding DataTable}" AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" />
         </Grid>
     </Grid>

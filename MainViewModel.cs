@@ -14,6 +14,7 @@ namespace DbIdExplorer
 		private DataTable _dataTable;
 		private object _selectedCell;
 		private string _connectionString;
+        private int _frozenColumnCount;
 
         public Guid? Id
 		{
@@ -52,11 +53,21 @@ namespace DbIdExplorer
 			}
 		}
 
+        public int FrozenColumnCount
+        {
+            get { return _frozenColumnCount; }
+            set
+            {
+                _frozenColumnCount = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ObservableCollection<string> SavedConnectionStrings { get; } = new ObservableCollection<string>();
 
         public ObservableCollection<TableItem> Tables { get; set; }
 
-		public Command SearchCommand { get; set; }
+        public Command SearchCommand { get; set; }
 
 		public Command SearchThisCommand { get; set; }
 
@@ -80,6 +91,7 @@ namespace DbIdExplorer
                 }
 
                 DataTable = dataTable;
+                FrozenColumnCount = value.Columns.Count;
             }
 		}
 
@@ -125,7 +137,7 @@ namespace DbIdExplorer
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			var handler = PropertyChanged;
-			if (handler != null) handler.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }
