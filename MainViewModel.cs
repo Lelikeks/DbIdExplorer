@@ -5,13 +5,15 @@ using System.Data;
 using System.Runtime.CompilerServices;
 using DbIdExplorer.Annotations;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace DbIdExplorer
 {
     internal class MainViewModel : INotifyPropertyChanged
 	{
 		private Guid? _id;
-		private DataTable _dataTable;
+        private readonly Stack<Guid> _history = new Stack<Guid>();
+        private DataTable _dataTable;
 		private object _selectedCell;
 		private string _connectionString;
         private int _frozenColumnCount;
@@ -67,6 +69,8 @@ namespace DbIdExplorer
 
         public ObservableCollection<TableItem> Tables { get; set; }
 
+        public Command BackCommand { get; set; }
+
         public Command SearchCommand { get; set; }
 
 		public Command SearchThisCommand { get; set; }
@@ -111,20 +115,36 @@ namespace DbIdExplorer
 		{
 			Tables = new ObservableCollection<TableItem>();
 
-			SearchCommand = new Command(OnSearch, () => Id != null);
+            BackCommand = new Command(OnBack, () => _history.Skip(1).Any());
+            SearchCommand = new Command(OnSearch, () => Id != null);
 			SearchThisCommand = new Command(OnSearchThis, () => SelectedCell is Guid && (Guid)SelectedCell != Id);
 		}
 
-		private void OnSearch()
+        private void OnBack()
+        {
+            _history.Pop();
+            Id = _history.Pop();
+
+            SearchCommand.Execute(null);
+        }
+        
+        private void OnSearch()
 		{
 			if (!Id.HasValue) return;
 
-			Tables.Clear();
+            if (_history.Any())
+            {
+                if (_history.Peek() != Id.Value)
+                    _history.Push(Id.Value);
+            }
+            else
+                _history.Push(Id.Value);
 
+            Tables.Clear();
 			foreach (var table in DbManager.Search(ConnectionString, Id.Value).OrderBy(x => x.Name))
-			{
 				Tables.Add(table);
-			}
+
+            BackCommand.OnCanExecuteChanged();
 		}
 
 		private void OnSearchThis()

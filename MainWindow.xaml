@@ -19,6 +19,10 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Padding" Value="4,0,0,0"/>
         </Style>
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="22"/>
+            <Setter Property="Padding" Value="20,0"/>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -27,14 +31,15 @@
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0">
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                <Button Margin="4,0,10,0" Padding="6,0,10,0" Command="{Binding BackCommand}">&lt;- Back</Button>
                 <TextBlock Margin="4">Id:</TextBlock>
                 <TextBox x:Name="IdText" MinWidth="260" Text="{Binding Id, UpdateSourceTrigger=PropertyChanged}">
                     <i:Interaction.Behaviors>
                         <local:SelectAllTextOnFocusBehavior/>
                     </i:Interaction.Behaviors>
                 </TextBox>
-                <Button Margin="4,0,0,0" Padding="20,0" Height="22" Command="{Binding SearchCommand}" IsDefault="True">Search</Button>
-                <Button Padding="20,0" Height="22" Margin="4,0,0,0" Command="{Binding SearchThisCommand}">Search Selected</Button>
+                <Button Margin="4,0,0,0" Command="{Binding SearchCommand}" IsDefault="True">Search</Button>
+                <Button Margin="4,0,0,0" Command="{Binding SearchThisCommand}">Search Selected</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <TextBlock>Connection String:</TextBlock>
