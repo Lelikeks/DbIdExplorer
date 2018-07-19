@@ -13,6 +13,8 @@ namespace DbIdExplorer
 
 	internal class TableItem
 	{
+		public string Schema { get; set; }
+
 		public string Name { get; set; }
 
 		public List<ColumnItem> Columns { get; set; }
