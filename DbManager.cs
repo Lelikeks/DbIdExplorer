@@ -20,7 +20,7 @@ declare @result table (schemaName sysname, tableName sysname, columnName sysname
 
 declare cur cursor local for
 select t1.name, t2.name, t3.name from sys.tables t1 join sys.columns t2 on t1.object_id = t2.object_id
-join sys.schemas t3 on t1.schema_id = t3.schema_id where t2.system_type_id = '36' and t2.name != 'id'
+join sys.schemas t3 on t1.schema_id = t3.schema_id where t2.system_type_id = '36'
 open cur
 fetch next from cur into @table, @column, @schema
 
